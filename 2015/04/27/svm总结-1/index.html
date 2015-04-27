@@ -4,21 +4,27 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   
-  <title>归档: 2015 | LumiG&#39;s blog</title>
+  <title>svm总结 | LumiG&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   
     <meta name="author" content="LumiG">
   
   
-  <meta name="description" content="A">
-<meta property="og:type" content="website">
-<meta property="og:title" content="LumiG's blog">
-<meta property="og:url" content="http://yoursite.com/archives/2015/index.html">
+    <meta name="description" content="线性svm问题描述假设已有训练样本为$(X, \vec y)$, 线性svm的目标即为寻找超平面$y = w^T + b$，使得所有样本到超平面的最小距离(margin)最大，即$$ \max \min_{i=1,2,…,n} d_i $$
+首先我们来计算任意一点 x 至超平面$y = w^T + b$的距离，作x至超平面的垂线，记垂足为$x_0$， 则 $d \frac{w}{||w||}= \">
+  
+  <meta name="description" content="线性svm问题描述假设已有训练样本为$(X, \vec y)$, 线性svm的目标即为寻找超平面$y = w^T + b$，使得所有样本到超平面的最小距离(margin)最大，即$$ \max \min_{i=1,2,…,n} d_i $$
+首先我们来计算任意一点 x 至超平面$y = w^T + b$的距离，作x至超平面的垂线，记垂足为$x_0$， 则 $d \frac{w}{||w||}= \">
+<meta property="og:type" content="article">
+<meta property="og:title" content="svm总结">
+<meta property="og:url" content="http://yoursite.com/2015/04/27/svm总结-1/index.html">
 <meta property="og:site_name" content="LumiG's blog">
-<meta property="og:description" content="A">
+<meta property="og:description" content="线性svm问题描述假设已有训练样本为$(X, \vec y)$, 线性svm的目标即为寻找超平面$y = w^T + b$，使得所有样本到超平面的最小距离(margin)最大，即$$ \max \min_{i=1,2,…,n} d_i $$
+首先我们来计算任意一点 x 至超平面$y = w^T + b$的距离，作x至超平面的垂线，记垂足为$x_0$， 则 $d \frac{w}{||w||}= \">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LumiG's blog">
-<meta name="twitter:description" content="A">
+<meta name="twitter:title" content="svm总结">
+<meta name="twitter:description" content="线性svm问题描述假设已有训练样本为$(X, \vec y)$, 线性svm的目标即为寻找超平面$y = w^T + b$，使得所有样本到超平面的最小距离(margin)最大，即$$ \max \min_{i=1,2,…,n} d_i $$
+首先我们来计算任意一点 x 至超平面$y = w^T + b$的距离，作x至超平面的垂线，记垂足为$x_0$， 则 $d \frac{w}{||w||}= \">
   
   
   <link rel="stylesheet" href="/css/style.css" type="text/css">
@@ -48,15 +54,7 @@
   </nav>
   <div class="clearfix"></div>
 </header>
-    <div class="content">
-
-
-<h2 class="archives-title"><span>2015</span></h2>
-
-
-
-  
-    <article class="post">
+    <div class="content"><article class="post">
   <header>
     
       <div class="icon"></div>
@@ -68,7 +66,7 @@
     
     
   
-    <h1 class="title"><a href="/2015/04/27/svm总结-1/">svm总结</a></h1>
+    <h1 class="title">svm总结</h1>
   
 
   </header>
@@ -145,7 +143,7 @@ s.t.  y_n(w^Tx_n + b) \ge d, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = d
 
     
   </div>
-  <footer class="end-sep">
+  <footer>
     
       
       
@@ -155,58 +153,25 @@ s.t.  y_n(w^Tx_n + b) \ge d, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = d
 </article>
 
   
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2015/04/24/A-test-blog/">
-  <time datetime="2015-04-24T02:14:20.000Z">
-    2015-04-24
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2015/04/24/A-test-blog/">A test blog</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <div id="toc" class="toc-article">
-  <strong class="toc-title">文章目录</strong>
-  
-</div>
-      <p>This is my first test blog using hexo.  </p>
-<p>A test for math formula using hexo-math.</p>
-<p>$ a=b+c $</p>
-<p>$$<br>\frac{a+b}{c} + \partial{u}<br>$$</p>
-<p>Test for code block</p>
-<figure class="highlight cpp"><figcaption><span>C++ Code</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i&lt;n; i++)&#123;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;i&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight objc"><figcaption><span>objc</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[rectangle setX: <span class="number">10</span> y: <span class="number">10</span> width: <span class="number">20</span> height: <span class="number">20</span>];</span><br></pre></td></tr></table></figure>
-    
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-svm总结-1" data-title="svm总结" data-url="http://yoursite.com/2015/04/27/svm总结-1/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'lumig'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
   </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-  
-  
-
-  <nav id="pagination">
-  
-  
-  <div class="clearfix"></div>
-</nav>
-
-</div>
   </div>
   <footer id="footer"><div class="copyright">
   

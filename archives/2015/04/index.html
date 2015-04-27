@@ -60,6 +60,106 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2015/04/27/svm总结-1/">
+  <time datetime="2015-04-27T08:59:19.000Z">
+    2015-04-27
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2015/04/27/svm总结-1/">svm总结</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#线性svm"><span class="toc-number">1.</span> <span class="toc-text">线性svm</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-number">1.1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题简化"><span class="toc-number">1.2.</span> <span class="toc-text">问题简化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#求解"><span class="toc-number">1.3.</span> <span class="toc-text">求解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#非线性svm"><span class="toc-number">2.</span> <span class="toc-text">非线性svm</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题起因"><span class="toc-number">2.1.</span> <span class="toc-text">问题起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lagrange_Dual"><span class="toc-number">2.2.</span> <span class="toc-text">Lagrange Dual</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#求解-1"><span class="toc-number">2.3.</span> <span class="toc-text">求解</span></a></li></ol></li></ol>
+</div>
+      <h1 id="线性svm">线性svm</h1><h2 id="问题描述">问题描述</h2><p>假设已有训练样本为$(X, \vec y)$, 线性svm的目标即为寻找超平面$y = w^T + b$，使得所有样本到超平面的最小距离(margin)最大，即<br>$$ \max \min_{i=1,2,…,n} d_i $$</p>
+<p>首先我们来计算任意一点 x 至超平面$y = w^T + b$的距离，作x至超平面的垂线，记垂足为$x_0$， 则 $d \frac{w}{||w||}= \vec x - \vec x_0$。 对此式两边乘上 $w^T$，可得：<br>$$<br>w^Tx - w^Tx_0 = d \frac{ww^T}{||w||}<br>$$</p>
+<p>又点$x_0$在超平面上，有$w^Tx_0 + b =0 $，代入上式，即解得距离d的长度为：<br>$$<br>d = \frac{||w^Tx + b||}{||w||}<br>$$</p>
+<p>考虑到绝对值符号不利于最值问题的求解，我们对该优化问题做一些变形。注意到所有的样本中的$y_n = 1$, 并且当超平面划分正确时，必有 $y_n(w^T + b) &gt; 0 $.故我们可以以此代替上式中的绝对值部分。于是我们的优化问题可以等价为：</p>
+<span>$$\begin{multline*}
+\max_{b,w} margin(b,w) \\\ 
+s.t.  y_n(w^Tx_n + b) > 0,  margin(b,w) = \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} 
+\end{multline*}$$</span>
+<h2 id="问题简化">问题简化</h2><p>以上这个优化问题依旧是不好解决的，主要原因在于我们的边界，margin是不确定的。考虑到我们对于所有的样本，只关心他们相对于超平面的实际距离，而并不关心其相对的函数距离，我们不妨假设最小的函数距离永远为1，后面我们将说明即使最小的距离不为1，并不会影响最优解情况下w与b的值。即若$\min y_n(w^Tx+b) = 1$，优化问题变为：</p>
+<span>$$\begin{multline*}
+\max_{b,w} \frac{1}{||w||} \qquad s.t.  y_n(w^Tx_n + b) \ge 1, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = 1
+\end{multline*}$$</span>
+<p>若$\min y_n(w^Tx+b) = d$，其中d不为1，则$margin(b,w) = \frac{d}{||w||}$，优化问题变为</p>
+<span>$$\begin{multline*}
+\max_{b,w} \frac{d}{||w||} \qquad 
+s.t.  y_n(w^Tx_n + b) \ge d, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = d
+\end{multline*}$$</span>
+<p>只要令 $w = dw, b = db$，代入上式就可以得到和最小距离为1时完全相同的目标问题，从而不影响后续的求解工作。从几何上看，相当于我们对所有问题都进行了缩放，直至其距离超平面的距离变为一个恰当距离为止。</p>
+<h2 id="求解">求解</h2><p>为了方便求解，我们对该问题做一个等价的变换，</p>
+<span>$$\begin{equation}
+\min_{b,w} \frac{1}{2} w^Tw \qquad s.t.  y_n(w^Tx_n + b) \ge 1
+\end{equation}$$</span>
+<p>注意到我们一共修改了两处，第一将求最大值变为求最小值，并恰好讲w从分母移至分子位置，从而方便后续的求导求最值工作。第二，我们将$\min y_n(w^Tx_n + b) = 1$ 改为了 $y_n(w^Tx_n + b) \ge 1$, 这样的修改看起来弱化了约束条件，有可能使得得到的最优解不符合原始的约束条件。但正如上一节中讨论最小函数距离不为1的情况一样，对于解得的参数，若不符合等号条件只需进行简单的放缩，即可保证其正确性。</p>
+<p>观察可以发现，上式是一个线性的二次规划问题，共有d维特征，d+1个变量（w有d维，b一维），当我们解得最优解w，b后，只需将新的样本代入决策函数 $g_{svm} = w^Tx + b$即可判断其类别。</p>
+<p>利用二次规划求解，只需方程组符合形式</p>
+<p>$$ min_n \dfrac{1}{2}u^TQu + P^Tu \qquad s.t. \quad a_m^Tu \ge c_m $$</p>
+<p>此处 $u = [w,b]$， Q,P分别为u的二次项系数与一次项系数，至此随意采用一个现成的二次规划求解函数，即可得到线性svm问题的最优解。</p>
+<h1 id="非线性svm">非线性svm</h1><h2 id="问题起因">问题起因</h2><p>在上文中我们解决了线性可分情况下的svm问题，在这一节里我将描述一下求解线性不可分情况下的做法。直观而言，我们的思路是将原始的数据点映射至高维空间中(甚至无限维)，直至在高维空间中找到可以线性分割样本点的超平面，并对新的数据进行分类。数学描述即：</p>
+<p>对于映射 $\phi: \quad d \to \tilde{d}\quad$ 有 $z_n = \phi(x_n)$， 这里的映射$\phi$也可以成为核函数，即kernel，我们的svm优化问题将转化为：</p>
+<span>$$\begin{equation}
+\min_{b,w} \frac{1}{2} w^Tw \qquad s.t.  y_n(w^Tz_n + b) \ge 1
+\end{equation}$$</span>
+<p>随后我们仍可如法炮制，使用二次规划问题求解的方法替我们找到最优的w与b，对于新样本x，首先计算其在高维空间中的映射$\phi(x)$，随后利用决策函数即可判断其类别，看起来我们至此已经解决了非线性svm的问题。</p>
+<p>然而，这样的求解有一个巨大的隐患，观察可以发现，上述二次规划问题的参数数量取决于$z_n$的维度即$\tilde{d}$的大小。当我们使用的训练集较多或特征数量较多是时，我们必须将原始数据集映射到更高维度的空间中，这样将导致$\tilde{d}$变得相当大，这对最优解的求解是相当不利的，所以我们希望再次寻找一个和原问题等价的优化问题，使优化求解时变量的数目不依赖于高维空间的维度，而只依赖于训练样本特征的维度，这就是非线性svm问题中需要解决的问题。这里我们用到的方法是构造拉格朗日对偶问题。</p>
+<h2 id="Lagrange_Dual">Lagrange Dual</h2><p>构造对偶问题我们采用拉格朗日乘数法，即构造拉格朗日方程</p>
+<p>$$<br>L(b,w,\alpha) = \frac{1}{2}w^Tw + \sum_n\alpha_n(1-y_n(w^Tz_n + b)), \alpha_n &gt; 0<br>$$</p>
+<p>注意到这里，我们将原问题的约束条件作为一部分，放入了待求解的式子中，并用一组非负参数$\alpha_n$(一般Lagrange问题中会采用$\lambda$)来控制其变化，则SVM问题可以被转化为等价问题：</p>
+<p>$$ SVM = \min_{b,w} \max_n L(w,b,\alpha_n)$$</p>
+<p>等价性由lagrange乘数法得以保证(我们也可以简单的验证其正确性，待补充)</p>
+<h2 id="求解-1">求解</h2><p>上面的问题中，内层的最大化问题依旧不好求解，因为我们无法确定所有参数$\alpha$的值，然而先求外层的最小值我们则有较好的方案，所以我们考虑以下事实：</p>
+<span>$$\begin{equation}
+ SVM = \min_{b,w} \max_n L(w,b,\alpha_n) \ge   \max_n \min_{b,w} L(w,b,\alpha_{n})
+ \end{equation}$$</span>
+<p>注意到右边的问题是左边问题的弱化，而事实上两者的最优解将是相同的，在此处略去证明，因为我没看懂。。我们下面直接求解右侧问题的最优解，代入得到：</p>
+<span>$$\begin{equation}
+\max_{\alpha_n \ge 0} \min_{b,w}(\frac{1}{2}w^Tw + \sum_n \alpha_n(1-y_n(w^Tz_n + b))) 
+\end{equation}$$</span>
+<p>里层的最小化问题就是一个标准的拉格朗日乘数法可以解决的问题，当其取到最优解时，必有其在各个参数上的偏导数为0，即：$\dfrac{\partial L}{\partial w_n} = 0 \quad \dfrac{\partial L}{\partial b} = 0$ 求解这两个等式后代入原来的不等式中，有：</p>
+<p>$$ \dfrac{\partial L}{\partial b} = -\sum_n \alpha_n y_n = 0$$</p>
+<p>代入原式，有：</p>
+<span>$$\begin{equation}
+\max_{\sum_n \alpha_n y_n = 0, \alpha_n \ge 0} \min_{b,w}(\frac{1}{2}w^Tw + \sum_n \alpha_n(1-y_nw^Tz_n )) 
+\end{equation}$$</span>
+<p>进一步考虑在w方向上的偏导数，</p>
+<span>$$\begin{align*}
+\dfrac{\partial L}{\partial w_i} = w_i - \sum_n \alpha_n y_n z_{n,i}= 0\\\
+即 \quad w = \sum_n \alpha_ny_nz_n
+\end{align*}$$</span>
+<p>再次代入原式后，不等式退化为：</p>
+<span>$$\begin{align}
+\max_{\sum_n \alpha_n y_n = 0, \alpha_n \ge 0， w = \sum_n \alpha_ny_nz_n} (-\frac{1}{2}w^Tw + \sum_n \alpha_n)  = \\\
+\max_{\sum_n \alpha_n y_n = 0, \alpha_n \ge 0， w = \sum_n \alpha_ny_nz_n} (-\frac{1}{2}||\sum_n \alpha_n y_n z_n||^2 + \sum_n \alpha_n)
+\end{align}$$</span>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+  
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2015/04/24/A-test-blog/">
   <time datetime="2015-04-24T02:14:20.000Z">
     2015-04-24
@@ -75,6 +175,10 @@
   
   <div class="entry">
     
+      <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+</div>
       <p>This is my first test blog using hexo.  </p>
 <p>A test for math formula using hexo-math.</p>
 <p>$ a=b+c $</p>
