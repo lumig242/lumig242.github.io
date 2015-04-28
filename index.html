@@ -140,6 +140,14 @@ s.t.  y_n(w^Tx_n + b) \ge d, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = d
 \max_{\sum_n \alpha_n y_n = 0, \alpha_n \ge 0， w = \sum_n \alpha_ny_nz_n} (-\frac{1}{2}w^Tw + \sum_n \alpha_n)  = \\\
 \max_{\sum_n \alpha_n y_n = 0, \alpha_n \ge 0， w = \sum_n \alpha_ny_nz_n} (-\frac{1}{2}||\sum_n \alpha_n y_n z_n||^2 + \sum_n \alpha_n)
 \end{align}$$</span>
+<p>在这一系列变换中，所有的参数必须符合一系列约束条件，这一系列约束条件就被称为KKT条件，具体如下：</p>
+<ol>
+<li>$y_n(w^Tx_n + b) \ge 1$  </li>
+<li>$alpha_n  \ge 0$</li>
+<li>$\sum_n \alpha_ny_n = 0, w = \sum_n \alpha_ny_nz_n$</li>
+<li>$\alpha_n(1-y_n(w^Tz_n+b))$</li>
+</ol>
+<p>当一组训练集以及我们寻找的超平面符合以上一组KKT条件时，我们就可以将原来的svm问题转化为如上的拉格朗日对偶问题，随后我们就可以利用同样利用二次规划方法进行求解。</p>
 
     
   </div>
