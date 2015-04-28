@@ -77,7 +77,7 @@
     
       <div id="toc" class="toc-article">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#线性svm"><span class="toc-number">1.</span> <span class="toc-text">线性svm</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-number">1.1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题简化"><span class="toc-number">1.2.</span> <span class="toc-text">问题简化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#求解"><span class="toc-number">1.3.</span> <span class="toc-text">求解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#非线性svm"><span class="toc-number">2.</span> <span class="toc-text">非线性svm</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题起因"><span class="toc-number">2.1.</span> <span class="toc-text">问题起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lagrange_Dual"><span class="toc-number">2.2.</span> <span class="toc-text">Lagrange Dual</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#求解-1"><span class="toc-number">2.3.</span> <span class="toc-text">求解</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#线性svm"><span class="toc-number">1.</span> <span class="toc-text">线性svm</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-number">1.1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题简化"><span class="toc-number">1.2.</span> <span class="toc-text">问题简化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#求解"><span class="toc-number">1.3.</span> <span class="toc-text">求解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#非线性svm"><span class="toc-number">2.</span> <span class="toc-text">非线性svm</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题起因"><span class="toc-number">2.1.</span> <span class="toc-text">问题起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lagrange_Dual"><span class="toc-number">2.2.</span> <span class="toc-text">Lagrange Dual</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#求解-1"><span class="toc-number">2.3.</span> <span class="toc-text">求解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Kernel"><span class="toc-number">3.</span> <span class="toc-text">Kernel</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#多项式内核"><span class="toc-number">3.1.</span> <span class="toc-text">多项式内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高斯核"><span class="toc-number">3.2.</span> <span class="toc-text">高斯核</span></a></li></ol></li></ol>
 </div>
       <h1 id="线性svm">线性svm</h1><h2 id="问题描述">问题描述</h2><p>假设已有训练样本为$(X, \vec y)$, 线性svm的目标即为寻找超平面$y = w^T + b$，使得所有样本到超平面的最小距离(margin)最大，即<br>$$ \max \min_{i=1,2,…,n} d_i $$</p>
 <p>首先我们来计算任意一点 x 至超平面$y = w^T + b$的距离，作x至超平面的垂线，记垂足为$x_0$， 则 $d \frac{w}{||w||}= \vec x - \vec x_0$。 对此式两边乘上 $w^T$，可得：<br>$$<br>w^Tx - w^Tx_0 = d \frac{ww^T}{||w||}<br>$$</p>
@@ -145,11 +145,49 @@ s.t.  y_n(w^Tx_n + b) \ge d, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = d
 <p>在这一系列变换中，所有的参数必须符合一系列约束条件，这一系列约束条件就被称为KKT条件，具体如下：</p>
 <ol>
 <li>$y_n(w^Tx_n + b) \ge 1$  </li>
-<li>$alpha_n  \ge 0$</li>
+<li>$\alpha_n  \ge 0$</li>
 <li>$\sum_n \alpha_ny_n = 0, w = \sum_n \alpha_ny_nz_n$</li>
 <li>$\alpha_n(1-y_n(w^Tz_n+b))$</li>
 </ol>
 <p>当一组训练集以及我们寻找的超平面符合以上一组KKT条件时，我们就可以将原来的svm问题转化为如上的拉格朗日对偶问题，随后我们就可以利用同样利用二次规划方法进行求解。</p>
+<p>solve.</p>
+<span>$$\begin{align}
+\min_{\alpha_n}(\frac{1}{2}||\sum_n \alpha_n y_n z_n||^2 - \sum_n \alpha_n) \\\
+s.t. \sum y_n\alpha_n = 0, \alpha_n \ge 0 \\\
+这里就可以运用二次规划问题，对于二次系数和一次项系数 Q,P \\\
+q_{n,m} = y_n y_m z_n z_m, p_n = -1
+\end{align}$$</span>
+<p>此时我们可以发现，矩阵Q,P都是N维矩阵(N为训练样本的特征维度)，即我们的二次规划问题共有N个变量以及N+1个约束条件，已经与高维空间的维数$\tilde{d}$无关了，至此我们就已经解决了非线性的SVM问题。</p>
+<h1 id="Kernel">Kernel</h1><p>我们再来回头观察一下svm中的核函数的概念，当我们利用核函数将样本映射至高维划分时，大致经过了一下三个步骤：</p>
+<ol>
+<li>计算$z_n = \phi(x_n)$</li>
+<li>对$z_n$进行求解，找到最优情况下的参数w,b</li>
+<li>$\phi(x<em>{new}) = z</em>{new}, g<em>{svm}(z</em>{new})$</li>
+</ol>
+<p>在这当我们在优化时计算二次系数矩阵Q时，需要在$\tilde{d}$中进行N次内积运算，这个过程将会很大的影响我们求解最优解的过程，而事实上，我们可以通过巧妙的选取$\phi$函数，来避免在高维空间中的内积运算。</p>
+<h2 id="多项式内核">多项式内核</h2><p>我们先随意的选取一个二次多项式核函数，</p>
+<p>$$\phi_2(x) = (1,x_1,x_2,…,x_n,x_1^2,x_1,x_2,…,x_n^2)$$</p>
+<p>当我们在在映射后的空间中计算内积时：</p>
+<span>$$\begin{align}
+Kernel = \phi_2(x)\phi_2(x') = 1 + \sum_{i=1}^n x_i x_i' + \sum_{i=1}^n \sum_{j=1}^n x_ix_jx_i'x_j' = 1 + x^Tx' + (x^Tx')^2
+\end{align}$$</span>
+<p>即：<br>$$K_{\phi_2}(x,x’) = \phi(x)^T \phi(x’)$$</p>
+<p>故当我们利用二次规划程序寻找最优解时，只要取$q<em>{n,m} = y_n y_m k</em>{\phi}(x_n, x_m)$即可</p>
+<p>当对新样本进行分类时</p>
+<span>$$\begin{align}
+g_{svm}(w^T\phi(x)+b) = g_{svm}(\sum_n \alpha_n y_n \phi(x_n) \phi(x) +b) = sign(\sum_n \alpha_n y_n k_{\phi}(x_n,x) + b)
+\end{align}$$</span>
+<p>至此，通过合理的选择核函数，我们的求解过程中不再需要在$\tilde{d}$维空间中进行内积运算，算法复杂度为$o(N^2)$</p>
+<h2 id="高斯核">高斯核</h2><p>高斯核又称为rbf核（一般机器学习库中会使用这个名字作为参数），它比多项式核更进一步，将原始数据映射至无限维空间中进行分割，其形式为：</p>
+<p>$$k(x,x’) = exp(-\gamma ||x-x’||^2), \quad \gamma \ge 0$$</p>
+<p>下面我们取$\gamma = 1$来说明一下其合理性：</p>
+<span>$$\begin{align}
+k(x,x') = exp(-\gamma ||x-x'||^2) = exp(-x^2) exp(-x'^2) exp(2xx')\\\
+= exp(-x^2) exp(-x'^2) (1 + \frac{2xx'}{2!} + \frac{(2xx')^2}{2!} +...+\frac{(2xx')^i}{i!} + ...) \\\
+= \sum_i ((exp(-x^2) \sqrt{\frac{2!}{i!}x}) (exp(-x'^2) \sqrt{\frac{2!}{i!}x'})\\\
+= \phi(x)^T \phi(x')
+\end{align}$$</span>
+<p>这就是高斯核的基本形式，实际计算时，我们不必考虑其真正的高维空间维度，这使得我们可以很好的分割输入的数据点。</p>
 
     
   </div>
