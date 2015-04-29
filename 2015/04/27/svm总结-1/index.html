@@ -87,12 +87,12 @@ s.t.  y_n(w^Tx_n + b) > 0,  margin(b,w) = \min_{i} \frac{y_n(w^Tx_n + b)}{||w||}
 \end{multline*}$$</span>
 <h2 id="问题简化">问题简化</h2><p>以上这个优化问题依旧是不好解决的，主要原因在于我们的边界，margin是不确定的。考虑到我们对于所有的样本，只关心他们相对于超平面的实际距离，而并不关心其相对的函数距离，我们不妨假设最小的函数距离永远为1，后面我们将说明即使最小的距离不为1，并不会影响最优解情况下w与b的值。即若$\min y_n(w^Tx+b) = 1$，优化问题变为：</p>
 <span>$$\begin{multline*}
-\max_{b,w} \frac{1}{||w||} \qquad s.t.  y_n(w^Tx_n + b) \ge 1, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = 1
+\max_{b,w} \frac{1}{||w||} \qquad s.t.  y_n(w^Tx_n + b) \ge 1, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = \frac{1}{||w||}
 \end{multline*}$$</span>
 <p>若$\min y_n(w^Tx+b) = d$，其中d不为1，则$margin(b,w) = \frac{d}{||w||}$，优化问题变为</p>
 <span>$$\begin{multline*}
 \max_{b,w} \frac{d}{||w||} \qquad 
-s.t.  y_n(w^Tx_n + b) \ge d, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = d
+s.t.  y_n(w^Tx_n + b) \ge d, \quad \min_{i} \frac{y_n(w^Tx_n + b)}{||w||} = \frac{d}{||w||}
 \end{multline*}$$</span>
 <p>只要令 $w = dw, b = db$，代入上式就可以得到和最小距离为1时完全相同的目标问题，从而不影响后续的求解工作。从几何上看，相当于我们对所有问题都进行了缩放，直至其距离超平面的距离变为一个恰当距离为止。</p>
 <h2 id="求解">求解</h2><p>为了方便求解，我们对该问题做一个等价的变换，</p>
