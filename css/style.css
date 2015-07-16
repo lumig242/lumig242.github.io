@@ -566,6 +566,37 @@ ol.toc {
   -ms-transition: color 0.3s ease-out;
   transition: color 0.3s ease-out;
 }
+.prev_next {
+  margin: 1em 0;
+  clear: both;
+  overflow: hidden;
+}
+.prev_next a {
+  display: block;
+  float: left;
+  width: 50%;
+  background: #dbdbdb;
+  text-align: center;
+  padding: 0.4em 0;
+  color: #1ba1e2;
+  -webkit-transition: background 0.45s color 0.45s;
+  -moz-transition: background 0.45s color 0.45s;
+  -o-transition: background 0.45s color 0.45s;
+  -ms-transition: background 0.45s color 0.45s;
+  transition: background 0.45s color 0.45s;
+}
+.prev_next a:hover {
+  color: #fafafa;
+  background: #717171;
+}
+.prev_next a.prev::before {
+  content: "上一篇：";
+  padding-right: 0.5em;
+}
+.prev_next a.next::before {
+  content: "下一篇：";
+  padding-right: 0.5em;
+}
 #comment {
   padding: 0 20px 20px;
   overflow-x: hidden;
@@ -603,8 +634,8 @@ ol.toc {
 }
 .archives-title {
   font-weight: normal;
-  font-size: 1.4em;
-  margin-bottom: 10px;
+  font-size: 1.8em;
+  margin-bottom: 20px;
   padding: 0 30px;
   text-shadow: 0 0 1px #fff;
 }
@@ -620,17 +651,17 @@ ol.toc {
   content: '\f07b';
 }
 .archives-wrapper:last-child {
-  padding-bottom: 10px;
+  padding-bottom: 13px;
 }
 .archives-wrapper .archives-year > a {
   color: #555;
 }
 .archives-wrapper .archives > article {
-  padding-top: 0;
+  padding-top: 8px;
   padding-bottom: 0;
 }
 .archives-wrapper .archives > article header .title {
-  font-size: 1.1em;
+  font-size: 1em;
 }
 #footer {
   width: 680px;

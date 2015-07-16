@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>AdaBoost | LumiG&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="LumiG">
+  
+  
+    <meta name="description" content="这次再来记录一下什么是adaboost(Adaptive Boosting)，也是一个很早就知道用过的算法，一直没有仔细了解过，感谢林老师的课程，资料基本来自其课程内容，少量来自sklearn的官方文档。">
+  
+  <meta name="description" content="这次再来记录一下什么是adaboost(Adaptive Boosting)，也是一个很早就知道用过的算法，一直没有仔细了解过，感谢林老师的课程，资料基本来自其课程内容，少量来自sklearn的官方文档。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AdaBoost">
+<meta property="og:url" content="http://yoursite.com/2015/06/08/adaboost-md/index.html">
+<meta property="og:site_name" content="LumiG's blog">
+<meta property="og:description" content="这次再来记录一下什么是adaboost(Adaptive Boosting)，也是一个很早就知道用过的算法，一直没有仔细了解过，感谢林老师的课程，资料基本来自其课程内容，少量来自sklearn的官方文档。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AdaBoost">
+<meta name="twitter:description" content="这次再来记录一下什么是adaboost(Adaptive Boosting)，也是一个很早就知道用过的算法，一直没有仔细了解过，感谢林老师的课程，资料基本来自其课程内容，少量来自sklearn的官方文档。">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">LumiG&#39;s blog</a></h1>
+    <p><a href="/">Go!</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Category</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+
+  <div class="clearfix"></div>
+
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2015/06/08/adaboost-md/">
+  <time datetime="2015-06-08T10:48:10.000Z">
+    2015-06-08
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">AdaBoost</h1>
+  
+
+  </header>
+  
+   <div class="entry">
+    
+
+<div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Blending"><span class="toc-number">1.</span> <span class="toc-text">Blending</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Uniform_blending"><span class="toc-number">1.1.</span> <span class="toc-text">Uniform blending</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Non-uniform_blending"><span class="toc-number">1.2.</span> <span class="toc-text">Non-uniform blending</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Selection_and_Stacking"><span class="toc-number">1.3.</span> <span class="toc-text">Selection and Stacking</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Bagging"><span class="toc-number">2.</span> <span class="toc-text">Bagging</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Adaboost"><span class="toc-number">3.</span> <span class="toc-text">Adaboost</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#算法步骤"><span class="toc-number">3.1.</span> <span class="toc-text">算法步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#权重调整"><span class="toc-number">3.1.1.</span> <span class="toc-text">权重调整</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初值选择"><span class="toc-number">3.1.2.</span> <span class="toc-text">初值选择</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#特点"><span class="toc-number">3.2.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例"><span class="toc-number">3.3.</span> <span class="toc-text">实例</span></a></li></ol></li></ol>
+</div>
+
+      <p>这次再来记录一下什么是adaboost(Adaptive Boosting)，也是一个很早就知道用过的算法，一直没有仔细了解过，感谢林老师的课程，资料基本来自其课程内容，少量来自sklearn的<a href="http://scikit-learn.org/stable/modules/ensemble.html" target="_blank" rel="external">官方文档</a>。</p>
+<a id="more"></a>
+<p>开始前先贴一张表格，描述了一些算法之间的关系,文章主要顺着这个表格的次序来写，decision tree就略过了，改天重新写一个。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">aggregation type</th>
+<th style="text-align:center">blending</th>
+<th style="text-align:center">learning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">uniform</td>
+<td style="text-align:center">voting</td>
+<td style="text-align:center">Bagging</td>
+</tr>
+<tr>
+<td style="text-align:left">non-uniform</td>
+<td style="text-align:center">linear</td>
+<td style="text-align:center">Adaboost</td>
+</tr>
+<tr>
+<td style="text-align:left">conditional</td>
+<td style="text-align:center">stacking</td>
+<td style="text-align:center">Decision Tree</td>
+</tr>
+</tbody>
+</table>
+<h1 id="Blending">Blending</h1><p>blending的中文意思是混合，核心思想也就是将一组弱分类器组合起来，得到更加有效和更加稳定的结果。当我们面对某一组训练数据，我们可以通过改变训练样本或学习算法，作出多个决策g，将这些g进行结合的方法包括几种：</p>
+<ol>
+<li>取一般表现最好的分类器，即<span>$$\begin{equation}
+G(X) = g_{t_i}(x) , t_i = \min_i E_{val}(g_t^-) 
+\end{equation}$$</span></li>
+<li>均匀混合各个分类器，即<span>$$\begin{equation}
+G(X) = sign(\sum_{t=1}^T g_t(x))
+\end{equation}$$</span></li>
+<li>非均匀线性混合各个分类器，即<span>$$\begin{equation}
+G(X) = sign(\sum_{t=1}^T \alpha_t g_t(x))
+\end{equation}$$</span></li>
+<li>条件混合各个分类器，即<span>$$\begin{equation}
+G(X) = sign(\sum_{t=1}^T q_t(x) g_t(x))
+\end{equation}$$</span>
+</li>
+</ol>
+<p>可以看到，第一种方案完全依赖于一个特别强的分类器，相当于我们通过做validation，确认一种最好的方案。而我们试图通过后三种方式，来混合得到更好的表现结果。</p>
+<h2 id="Uniform_blending">Uniform blending</h2><p>uniform blending是一个很自然的想法，在classification场景下，<br><span>$$\begin{equation} G(X) = sign(\sum_{t=1}^T g_t(x))
+\end{equation}$$</span></p>
+<p>相当于让所有的弱分类器进行投票，得票最多的类别即为最终得到的类别。而在回归场景下，有<br><span>$$\begin{equation} G(X) = \dfrac{1}{T}(\sum_{t=1}^T g_t(x))
+\end{equation}$$</span></p>
+<p>仍然是一个类似投票的过程，我们认为对一组分类器的结果取平均值将由于我们选择其中某一个带来的结果，下面给一个简单的证明：</p>
+<p>上文的叙述等价于以下数学表达式：<br><span>$$\begin{equation} 
+avg((g_t-f)^2) \ge (G-f)^2
+\end{equation}$$</span><br>此处f为该处测试样本的实际值，G即为上文回归情况下，对所有弱分类器的平均值，即$ G=avg(g_t(x))$</p>
+<p>我们将原不等式两边打开，其等价于如下式子：<br><span>$$\begin{aligned} 
+\Longleftrightarrow avg((g_t)^2 - 2f avg(g_t) +f^2 \ge G^2 -2fG + G^2 \\
+\Longleftrightarrow avg(g_t)^2 - 2fG \ge G^2 - 2fG \\
+\Longleftrightarrow avg(g_t)^2 \ge G^2
+\end{aligned}$$</span></p>
+<p>最后一个式子由均值不等式保证，故我们可以得知，如果我们以一组弱分类器的平均值作为最终的返回值，效果（与真实值的差异）一定好于我们随便选择其中一个预测来得更好，这就是我们使用blending方法的一点点理论保障。</p>
+<h2 id="Non-uniform_blending">Non-uniform blending</h2><p>非均匀的混合方式也即我们为每个分类器的结果赋予不通的权值，以线性加权的结果作为最终的预测值。相比前一种，这个方法给了我们更多的自由度。我们只需要解决一个问题，即如何确定$\alpha$的值。其实这样的线性混合模型与一般的线性回归问题是类似的，我们仍旧通过最小化$E_{in}$来实现，即：</p>
+<span>$$\begin{equation} 
+\min_{\alpha_t \ge 0} \frac{1}{N}\sum_{n-1}^N(y_n - \frac{1}{T}\sum_{t=1}^T \alpha_t g_t(x_i))^2
+\end{equation}$$</span>
+<p>这里除了约束条件外，与原先的线性回归问题几乎没有任何区别，我们只是将弱分类器们的权值作为了对特征的某一种转换，从而来试图得到更好的结果。</p>
+<h2 id="Selection_and_Stacking">Selection and Stacking</h2><p>stacking又被成为any blending，基本表述就是从训练集中我们找出T个分类器$g_1^-, g_2^-, … , g_n^-$，随后我们相当于做一次特征变换，将原来的样本$(x_n, y_n)$转化为$(z_n, y_n)$，其中$z=(g_1^-(x), g_2^-(x), …, g_n^-(x))$z，注意这里对所有g的选择将以validation的结果作为依据。</p>
+<h1 id="Bagging">Bagging</h1><p>learning类的方法与blending的方法的区别主要在于如何选取不同的弱分类器g，我们有多种选取g的方法，包括使用不同的决策模型(blendind)，对同一个模型使用不同的参数，某些算法天生带有随机性，或者选择不同的训练样本。</p>
+<p>bagging的想法就主要基于选择不同的训练样本来得到不同的g，即每一次训练的时候不使用全部的样本，而是有选择的使用一部分。这里一个好的选择方式是使用统计学中bootsrap的方法，这详相当于一个有放回的组合问题，如果我们希望得到一个规模为N的训练集，则在原始样本中有放回地挑选N次，这样取出的集合就成为bootsrap。显然我们对N的大小并没有限制，可以大于或小于原始样本大小。</p>
+<p>对于bagging算法而言，我们固定一个训练集合的大小，连续多次使用bootsrap的方法，得到一组训练集。随后我们选择一个分类算法A，分别在每一个训练集上训练，从而得到一组弱分类器，最终使用uniform blending的方法将他们组合起来，就是bagging算法返回的最终结果。</p>
+<p>从直观上而言，bagging的每一步都只能分开一小部分样本，当我们连续多次使用后，就可以组合成为一个比较复杂的边界，帮助我们进行分类。前面提过，blending表现要好，最重要的是使得所有的$g_t$间的差异尽可能大，bootsrap帮助我们得到的结果就可以很好地满足这个条件。</p>
+<h1 id="Adaboost">Adaboost</h1><h2 id="算法步骤">算法步骤</h2><h3 id="权重调整">权重调整</h3><h3 id="初值选择">初值选择</h3><h2 id="特点">特点</h2><h2 id="实例">实例</h2>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/ml/">ml</a>
+  </div>
+
+      
+      
+<div class="prev_next clearfix">
+  
+    <a href="/2015/07/16/线性排序/" class="alignleft prev" title="线性排序">线性排序</a>
+  
+  
+    <a href="/2015/04/27/svm总结-1/" class="alignright next" title="svm总结">svm总结</a>
+  
+</div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+  
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-adaboost-md" data-title="AdaBoost" data-url="http://yoursite.com/2015/06/08/adaboost-md/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'lumig'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  </div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2015 <a href="/">LumiG</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://lumig242.github.io/" target="_blank">LumiG</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = { short_name: 'lumig' };
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';
+    ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-62434004-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

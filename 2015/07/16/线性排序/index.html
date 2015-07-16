@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>线性排序 | LumiG&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="LumiG">
+  
+  
+    <meta name="description" content="今天做leetcode突然碰到了桶排序，居然想不清楚了，顺便把剩下几个也写下，以后看。">
+  
+  <meta name="description" content="今天做leetcode突然碰到了桶排序，居然想不清楚了，顺便把剩下几个也写下，以后看。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性排序">
+<meta property="og:url" content="http://yoursite.com/2015/07/16/线性排序/index.html">
+<meta property="og:site_name" content="LumiG's blog">
+<meta property="og:description" content="今天做leetcode突然碰到了桶排序，居然想不清楚了，顺便把剩下几个也写下，以后看。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="线性排序">
+<meta name="twitter:description" content="今天做leetcode突然碰到了桶排序，居然想不清楚了，顺便把剩下几个也写下，以后看。">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">LumiG&#39;s blog</a></h1>
+    <p><a href="/">Go!</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Category</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+
+  <div class="clearfix"></div>
+
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2015/07/16/线性排序/">
+  <time datetime="2015-07-16T03:53:40.000Z">
+    2015-07-16
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">线性排序</h1>
+  
+
+  </header>
+  
+   <div class="entry">
+    
+
+      <p>今天做leetcode突然碰到了桶排序，居然想不清楚了，顺便把剩下几个也写下，以后看。<br><a id="more"></a></p>
+<h1 id="计数排序">计数排序</h1><p>计数排序大概就是确定输入数组的上下界后，我们创建数组C[0…k]，用于统计不超过每一个值得元素个数。当得到统计表后，我们就可以很容易的直到原始数组中每个元素排序后应处于的位置信息了。</p>
+<figure class="highlight python"><figcaption><span>计数排序</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countSort</span><span class="params">(nums)</span>:</span></span><br><span class="line">    <span class="string">'''</span><br><span class="line">    Sort non-negative intergers.</span><br><span class="line">    O(N+K) time complexity </span><br><span class="line">    O(N+K) space complexity</span><br><span class="line">    '''</span></span><br><span class="line">    k = max(nums)</span><br><span class="line">    c = [<span class="number">0</span>] * (k+<span class="number">1</span>)</span><br><span class="line">    sortedArray = [<span class="number">0</span>] * len(nums)</span><br><span class="line">    <span class="comment"># Place</span></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">        c[n] += <span class="number">1</span></span><br><span class="line">    <span class="comment"># Count</span></span><br><span class="line">    <span class="keyword">for</span> ind, val <span class="keyword">in</span> enumerate(c[:-<span class="number">1</span>]):</span><br><span class="line">        c[ind+<span class="number">1</span>] += c[ind]</span><br><span class="line">    <span class="comment"># Sort</span></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">        sortedArray[c[n]-<span class="number">1</span>] = n</span><br><span class="line">    <span class="keyword">return</span> sortedArray</span><br></pre></td></tr></table></figure>
+<h1 id="桶排序">桶排序</h1><p>但是计数排序怎么看都是一个有点逗的排序方法，我们来回扫描了多次数组c，并且当元素比较稀疏时，数组c占用了许多无用的空间。所以就有了桶排序，我们把元素按照大小划分到M个不同的bucket中，随后在每一个bucket中进行排序，最后将这些bucket拼接起来得到最后的排序结果。算法复杂度为 O(N) + M<em>O(N/M</em>log(N/M)) = O(N) + O(N)*O(logN - logM)</p>
+<p>可以发现当M接近于N时，算法复杂度就会接近于线性，当然这也会需要一些额外的空间开销，但不会超过线性需求，代码如下：</p>
+<figure class="highlight python"><figcaption><span>桶排序</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bucketSort</span><span class="params">(nums)</span>:</span></span><br><span class="line">    <span class="string">'''</span><br><span class="line">    Sort non-negative intergers.</span><br><span class="line">    O(N) time complexity </span><br><span class="line">    '''</span></span><br><span class="line">    bucketNum = <span class="number">2000</span></span><br><span class="line">    k = max(nums)  <span class="comment"># The upper bound.</span></span><br><span class="line">    <span class="comment"># Initializing all the buckets</span></span><br><span class="line">    buckets = [[] <span class="keyword">for</span> i <span class="keyword">in</span> xrange(bucketNum)] </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Map to buckets</span></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">        buckets[n/k*(bucketNum-<span class="number">1</span>)].append(n)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Sort each bucket. O(N/M*log(N/M)) time consumption each</span></span><br><span class="line">    buckets = [sorted(bucket) <span class="keyword">for</span> bucket <span class="keyword">in</span> buckets]</span><br><span class="line">    <span class="comment"># Merge</span></span><br><span class="line">    <span class="keyword">from</span> itertools <span class="keyword">import</span> chain</span><br><span class="line">    <span class="keyword">return</span> list(chain(*buckets))</span><br></pre></td></tr></table></figure>
+<h1 id="基数排序">基数排序</h1><p>最后呢就是基数排序，其实只是为了可以按照多个关键字进行排序而设计的一种方法，在这里对于整数情况，我们直接按每位拆开，由地位至高位一次排序即可，每一次小的排序过程我们都使用了稳定的桶排序。时间复杂度实际是 k * O(N),代码如下：</p>
+<figure class="highlight python"><figcaption><span>桶排序</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">radixSort</span><span class="params">(nums)</span>:</span></span><br><span class="line">    radix = <span class="number">10</span></span><br><span class="line">    <span class="keyword">import</span> math</span><br><span class="line">    <span class="comment"># Maxium digits</span></span><br><span class="line">    k = int(math.ceil(math.log(max(nums), radix)))</span><br><span class="line">    sortedNums = nums</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(k):</span><br><span class="line">        buckets = [[] <span class="keyword">for</span> j <span class="keyword">in</span> range(radix)]</span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> sortedNums:</span><br><span class="line">            buckets[num / (radix**(i+<span class="number">1</span>)) % radix].append(num)</span><br><span class="line">        <span class="keyword">from</span> itertools <span class="keyword">import</span> chain</span><br><span class="line">        sortedNums =  list(chain(*buckets))</span><br><span class="line">    <span class="keyword">return</span> sortedNums</span><br></pre></td></tr></table></figure>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/algorithm/">algorithm</a>
+  </div>
+
+      
+      
+<div class="prev_next clearfix">
+  
+  
+    <a href="/2015/06/08/adaboost-md/" class="alignright next" title="AdaBoost">AdaBoost</a>
+  
+</div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+  
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-线性排序" data-title="线性排序" data-url="http://yoursite.com/2015/07/16/线性排序/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'lumig'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  </div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2015 <a href="/">LumiG</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://lumig242.github.io/" target="_blank">LumiG</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = { short_name: 'lumig' };
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';
+    ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-62434004-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
