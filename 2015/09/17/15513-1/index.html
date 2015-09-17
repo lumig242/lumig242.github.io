@@ -1,0 +1,308 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>15513(1) Data Representation | LumiG&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="LumiG">
+  
+  
+    <meta name="description" content="Since this blog, I’ll turn to writing in English:) I’m now pursuing my ms degree in CMU now in mountain view. This series of blogs will act as the memo of my 15513, introduction to computer system cou">
+  
+  <meta name="description" content="Since this blog, I’ll turn to writing in English:) I’m now pursuing my ms degree in CMU now in mountain view. This series of blogs will act as the memo of my 15513, introduction to computer system cou">
+<meta property="og:type" content="article">
+<meta property="og:title" content="15513(1) Data Representation">
+<meta property="og:url" content="http://yoursite.com/2015/09/17/15513-1/index.html">
+<meta property="og:site_name" content="LumiG's blog">
+<meta property="og:description" content="Since this blog, I’ll turn to writing in English:) I’m now pursuing my ms degree in CMU now in mountain view. This series of blogs will act as the memo of my 15513, introduction to computer system cou">
+<meta property="og:image" content="https://farm6.staticflickr.com/5728/21309626860_fe94690b0a_b_d.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="15513(1) Data Representation">
+<meta name="twitter:description" content="Since this blog, I’ll turn to writing in English:) I’m now pursuing my ms degree in CMU now in mountain view. This series of blogs will act as the memo of my 15513, introduction to computer system cou">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">LumiG&#39;s blog</a></h1>
+    <p><a href="/">Go!</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Category</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+
+  <div class="clearfix"></div>
+
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2015/09/17/15513-1/">
+  <time datetime="2015-09-17T19:36:17.000Z">
+    2015-09-17
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">15513(1) Data Representation</h1>
+  
+
+  </header>
+  
+   <div class="entry">
+    
+
+<div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Shift_Operations"><span class="toc-number">1.</span> <span class="toc-text">Shift  Operations</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Expression_evalutaion"><span class="toc-number">2.</span> <span class="toc-text">Expression evalutaion</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Mix_of_unsigned/signed"><span class="toc-number">2.1.</span> <span class="toc-text">Mix of unsigned/signed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tricky_thing_about_unsigned_int"><span class="toc-number">2.2.</span> <span class="toc-text">Tricky thing about unsigned int</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Floating_point_representation"><span class="toc-number">3.</span> <span class="toc-text">Floating point representation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Normalized_values"><span class="toc-number">3.1.</span> <span class="toc-text">Normalized values</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Denormalized_values"><span class="toc-number">3.2.</span> <span class="toc-text">Denormalized values</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Special_values"><span class="toc-number">3.3.</span> <span class="toc-text">Special values</span></a></li></ol></li></ol>
+</div>
+
+      <p>Since this blog, I’ll turn to writing in English:) I’m now pursuing my ms degree in CMU now in mountain view. This series of blogs will act as the memo of my 15513, introduction to computer system course. Since I’ve already take the first part of the book in my undergraduates, I’ll only briefly write down those I’m still confused with as separate bullet points.</p>
+<p>The first part of the book is about data representations. It covers the topics of how integer/float number are stored in computers following the IEEE rule. Here it goes:</p>
+<a id="more"></a>
+<h1 id="Shift_Operations">Shift  Operations</h1><p>Left shift: logical shift is the same as arithmetic shift</p>
+<p>Right shift: </p>
+<ul>
+<li>Logical shift: Fill 0s on the left</li>
+<li>Arithmetic shift: Replicate most signification bit on left</li>
+</ul>
+<p>I used to be confused with that. Actually, arithmetic means maintain the value that x&gt;&gt;n == x/(2**n), while logical is pure right shift. And thus, they behave the same in left shifts.</p>
+<h1 id="Expression_evalutaion">Expression evalutaion</h1><h2 id="Mix_of_unsigned/signed">Mix of unsigned/signed</h2><ul>
+<li>If there is a mix of unsigned and signed in single expression, <em>signed values implicitly cast to unsigned</em></li>
+</ul>
+<p>Puzzles:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Constant1</th>
+<th style="text-align:left">Canstant2</th>
+<th style="text-align:left">Relation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0u</td>
+<td style="text-align:left">==</td>
+</tr>
+<tr>
+<td style="text-align:left">-1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">&lt;</td>
+</tr>
+<tr>
+<td style="text-align:left">-1</td>
+<td style="text-align:left">0u</td>
+<td style="text-align:left">&gt;</td>
+</tr>
+<tr>
+<td style="text-align:left">2147483647</td>
+<td style="text-align:left">-2147483647-1</td>
+<td style="text-align:left">&gt;</td>
+</tr>
+<tr>
+<td style="text-align:left">2147483647U</td>
+<td style="text-align:left">-2147483647-1</td>
+<td style="text-align:left">&lt;</td>
+</tr>
+<tr>
+<td style="text-align:left">-1</td>
+<td style="text-align:left">-2</td>
+<td style="text-align:left">&gt;</td>
+</tr>
+<tr>
+<td style="text-align:left">(unsigned)-1</td>
+<td style="text-align:left">-2</td>
+<td style="text-align:left">&gt; </td>
+</tr>
+<tr>
+<td style="text-align:left">2147483647</td>
+<td style="text-align:left">2147483648U</td>
+<td style="text-align:left">&lt;</td>
+</tr>
+<tr>
+<td style="text-align:left">2147483647</td>
+<td style="text-align:left">(int)2147483648U</td>
+<td style="text-align:left">&gt;</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Tricky_thing_about_unsigned_int">Tricky thing about unsigned int</h2><p>Here is piese of code that makes mistakes.</p>
+<figure class="highlight c"><figcaption><span>c</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> i;</span><br><span class="line"><span class="keyword">for</span>(i = cnt-<span class="number">2</span>; i &gt;=<span class="number">0</span>; i--)</span><br><span class="line">    a[i] += a[i+<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>Since C standard ensures that unsigned value will never be under 0, this loop will be endless. That is 0U - 1 tmax. As a result, we should use something like <a href="http://stackoverflow.com/questions/665745/whats-the-best-way-to-do-a-reverse-for-loop-with-an-unsigned-index" target="_blank" rel="external">this</a>.</p>
+<h1 id="Floating_point_representation">Floating point representation</h1><ul>
+<li>Numerical from</li>
+</ul>
+<p>$$<br>v = (-1)^S M 2^E<br>$$</p>
+<p>where s, M, E stand for sign, frac field and expression respectively.</p>
+<ul>
+<li>For 32 bits. it goes (1 + 9 + 23)</li>
+<li>For 64 bits, it goes (1 + 15 + 52)</li>
+</ul>
+<h2 id="Normalized_values">Normalized values</h2><ul>
+<li>exp is not 000..000 or 111…111</li>
+<li>E = exp - bias(127/1023)</li>
+<li>M = 1.xxxx…x, we get an extra leading bit in this form</li>
+</ul>
+<h2 id="Denormalized_values">Denormalized values</h2><ul>
+<li>exp = 000.0</li>
+<li>E = 1-bias (not 0-bias, to be consistent with the normalized view)</li>
+<li>M = 0.xxx…xx</li>
+<li>exp = 0, frac = 0 then represent 0 value</li>
+<li>exp = 0, frac != 0 then represent numbers close to 0</li>
+</ul>
+<h2 id="Special_values">Special values</h2><ul>
+<li>exp = 11…11</li>
+<li>if frac = 0 represent infinity, where 0,1 of the sign bit controls positive/negative infinity</li>
+<li>if frac != 0 represent NaN. Since no numerical values can be determined.</li>
+</ul>
+<p><img src="https://farm6.staticflickr.com/5728/21309626860_fe94690b0a_b_d.jpg" alt="from slides"></p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/memo/">memo</a>
+  </div>
+
+      
+<div class="prev_next clearfix">
+  
+  
+    <a href="/2015/07/16/线性排序/" class="alignright next" title="线性排序">线性排序</a>
+  
+</div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+  
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-15513-1" data-title="15513(1) Data Representation" data-url="http://yoursite.com/2015/09/17/15513-1/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'lumig'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  </div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2015 <a href="/">LumiG</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://lumig242.github.io/" target="_blank">LumiG</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = { short_name: 'lumig' };
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';
+    ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-62434004-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
