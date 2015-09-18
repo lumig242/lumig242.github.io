@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>15513(2) Machine-Level Programming | LumiG&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="LumiG">
+  
+  
+    <meta name="description" content="In the second part, the course stepped into the machine level programming, that is assembly language. In this semester, the course switches from the y86 architecture to x86 one and so does the assembl">
+  
+  <meta name="description" content="In the second part, the course stepped into the machine level programming, that is assembly language. In this semester, the course switches from the y86 architecture to x86 one and so does the assembl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="15513(2) Machine-Level Programming">
+<meta property="og:url" content="http://yoursite.com/2015/09/17/15513-2-Machine-Level-Programming/index.html">
+<meta property="og:site_name" content="LumiG's blog">
+<meta property="og:description" content="In the second part, the course stepped into the machine level programming, that is assembly language. In this semester, the course switches from the y86 architecture to x86 one and so does the assembl">
+<meta property="og:image" content="https://farm6.staticflickr.com/5674/21527191951_95a0aff8a7_b_d.jpg">
+<meta property="og:image" content="https://farm1.staticflickr.com/777/21493233006_6ffb45a7d9_b_d.jpg">
+<meta property="og:image" content="https://farm6.staticflickr.com/5766/21508428472_b9b2f36110_z_d.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="15513(2) Machine-Level Programming">
+<meta name="twitter:description" content="In the second part, the course stepped into the machine level programming, that is assembly language. In this semester, the course switches from the y86 architecture to x86 one and so does the assembl">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">LumiG&#39;s blog</a></h1>
+    <p><a href="/">Go!</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Category</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+
+  <div class="clearfix"></div>
+
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2015/09/17/15513-2-Machine-Level-Programming/">
+  <time datetime="2015-09-17T23:04:49.000Z">
+    2015-09-17
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">15513(2) Machine-Level Programming</h1>
+  
+
+  </header>
+  
+   <div class="entry">
+    
+
+<div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#General_points"><span class="toc-number">1.</span> <span class="toc-text">General points</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Procedure"><span class="toc-number">2.</span> <span class="toc-text">Procedure</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data"><span class="toc-number">3.</span> <span class="toc-text">Data</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Advanced_topics"><span class="toc-number">4.</span> <span class="toc-text">Advanced topics</span></a></li></ol>
+</div>
+
+      <p>In the second part, the course stepped into the machine level programming, that is assembly language. In this semester, the course switches from the y86 architecture to x86 one and so does the assembly language part. Here we goes! I’m writing this blog just when I go through all the slides for the first time. </p>
+<h2 id="General_points">General points</h2><ul>
+<li>RISC, CISC</li>
+<li>CPU (PC, Registers, Condition Codes)  Memory(code, data, stack)</li>
+</ul>
+<a id="more"></a>
+<p><img src="https://farm6.staticflickr.com/5674/21527191951_95a0aff8a7_b_d.jpg" alt="X86-64 Interger Registers"></p>
+<p>This is slightly different from the original ones.</p>
+<p><em>Instructions</em></p>
+<ul>
+<li>movq Source. Dest</li>
+<li>leaq Src, Dst (Compute the value of address)</li>
+<li>salq &lt;&lt;</li>
+<li>sarq, shrq &gt;&gt;</li>
+<li>incq, decq, negq, notq</li>
+</ul>
+<h2 id="Procedure">Procedure</h2><p><em>Usage conventions</em></p>
+<ul>
+<li>%rax : return value/caller save</li>
+<li>%rdi,…, %r9 : arguments/caller save</li>
+<li>%r10, %r11 : caller save/can be modified by procedure</li>
+<li>%rbx, %r12, %r13, %r14 : callee-saved</li>
+<li>%rbp /frame pointer</li>
+<li>%rsp /Restore to original value upon exit</li>
+</ul>
+<h2 id="Data">Data</h2><p>Alignment for data struct</p>
+<ul>
+<li>primitive data type requires k bytes</li>
+<li>address must be multiple of k</li>
+<li>to make memory be accessed by chunks</li>
+<li>POssible to put large data types first to save space</li>
+</ul>
+<p><em>floating points</em><br>we have xmm registers for floating points.</p>
+<p><img src="https://farm1.staticflickr.com/777/21493233006_6ffb45a7d9_b_d.jpg" alt=""></p>
+<p>All xmm registers are caller-saved here. Return value should be stored in %xxm0. All the integers that refers the memory will still be passed in ordinary registers while only FP values are passed in XMM registers.</p>
+<p>Almost forget about this part. Remeber refer to original text book. I’ll add the content the content once I have it .</p>
+<h2 id="Advanced_topics">Advanced topics</h2><p><img src="https://farm6.staticflickr.com/5766/21508428472_b9b2f36110_z_d.jpg" alt="Memory layout"></p>
+<p>To be continued before next lab.</p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/memo/">memo</a>
+  </div>
+
+      
+<div class="prev_next clearfix">
+  
+  
+    <a href="/2015/09/17/15513-1/" class="alignright next" title="15513(1) Data Representation">15513(1) Data Representation</a>
+  
+</div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+  
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-15513-2-Machine-Level-Programming" data-title="15513(2) Machine-Level Programming" data-url="http://yoursite.com/2015/09/17/15513-2-Machine-Level-Programming/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'lumig'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  </div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2015 <a href="/">LumiG</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://lumig242.github.io/" target="_blank">LumiG</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = { short_name: 'lumig' };
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';
+    ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-62434004-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
